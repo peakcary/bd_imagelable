@@ -50,10 +50,10 @@ function App() {
         setInfo(JSON.parse(JSON.stringify(info)));
         setIsModalOpen(true);
       });
-      labelerRef.current.on("updated", (result) => {
-        console.log(`%c------------------- updated result`,'background:#ccc')
-        console.log(JSON.stringify(result))
-      });
+      // labelerRef.current.on("updated", (result) => {
+      //   console.log(`%c------------------- updated result`,'background:#ccc')
+      //   console.log(JSON.stringify(result))
+      // });
     }
   }, []);
 
@@ -90,18 +90,23 @@ function App() {
   const handleImageChange = (value) => {
     switch (value) {
       case "1":
+        labelerRef.current.setImage(img1);
         setImgUrl(img1);
         break;
       case "2":
+        labelerRef.current.setImage(img2);
         setImgUrl(img2);
         break;
       case "3":
+        labelerRef.current.setImage(img3);
         setImgUrl(img3);
         break;
       case "4":
+        labelerRef.current.setImage(img4);
         setImgUrl(img4);
         break;
       case "5":
+        labelerRef.current.setImage(img5);
         setImgUrl(img5);
         break;
       default:
@@ -122,30 +127,25 @@ function App() {
   };
 
   // 取消 取消标注 列表不添加数据
-  const handleCancel = () => { 
-    console.log(info.index);
-    console.log(info);
+  const handleCancel = () => {
     delByIndex(info.index);
     setIsModalOpen(false);
   };
 
   // 删除
-  const handleDelete = (item) => { 
+  const handleDelete = (item) => {
     delByIndex(item.index);
     const dataListNew = dataList.filter(
       (itemOld) => itemOld.index != item.index
     );
-    console.log('-------------------------------dataListNew')
-    console.log(dataListNew)
-    console.log('-------------------------------dataListNew end')
     let dN = dataListNew;
-    if(dataListNew&&dataListNew.length>0){
-        dN = dataListNew.map((item,index)=>{
-          let itemNew =item;
-          itemNew.index = index;
-          return itemNew; 
+    if (dataListNew && dataListNew.length > 0) {
+      dN = dataListNew.map((item, index) => {
+        let itemNew = item;
+        itemNew.index = index;
+        return itemNew;
       });
-    } 
+    }
     setDataList(dN);
   };
 
@@ -205,11 +205,12 @@ function App() {
     },
   ];
 
-  console.log("dataList:::::", dataList);
-
   const tableList = dataList ? [...dataList] : [];
   return (
-    <div className="container">
+    <Flex gap="middle" vertical>
+      <Flex>
+        <canvas className="canvas" ref={canvasRef} width={800} height={600} />
+      </Flex>
       <Flex wrap gap="small" align="center">
         <div className="row-label">图片切换:</div>
         <Select
@@ -223,28 +224,22 @@ function App() {
             { value: "4", label: "图片4" },
           ]}
         />
+        <Button type="primary" onClick={() => zoom(true)}>
+          +
+        </Button>
+        <Button type="primary" onClick={() => zoom(false)}>
+          -
+        </Button>
+        <Button type="primary" onClick={fitting} autoInsertSpace>
+          fitting
+        </Button>
+        <Button type="primary" onClick={onFocus} autoInsertSpace>
+          {isFocusMode ? "专注模式" : "非专注模式"}
+        </Button>
       </Flex>
       <Flex wrap gap="small" align="start">
-        <div>
-          <canvas className="canvas" ref={canvasRef} width={400} height={300} />
-          <Flex wrap gap="small">
-            <Button type="primary" onClick={() => zoom(true)}>
-              +
-            </Button>
-            <Button type="primary" onClick={() => zoom(false)}>
-              -
-            </Button>
-            <Button type="primary" onClick={fitting} autoInsertSpace>
-              fitting
-            </Button>
-            <Button type="primary" onClick={onFocus} autoInsertSpace>
-              {isFocusMode ? "专注模式" : "非专注模式"}
-            </Button>
-          </Flex>
-        </div>
         <Table columns={columns} dataSource={tableList} />
       </Flex>
-
       <Modal
         title="标注信息"
         open={isModalOpen}
@@ -281,7 +276,7 @@ function App() {
           </Row>
         </Space>
       </Modal>
-    </div>
+    </Flex>
   );
 }
 export default App;

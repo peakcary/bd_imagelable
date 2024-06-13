@@ -1278,6 +1278,8 @@ export default class CanvasLabeler extends EventBus {
       coor,
       label,
     } = shape;
+    // console.log('=====')
+    // console.log(shape)
     const [x, y] = coor.map((a) => a * this.scale);
     this.ctx.save();
     this.ctx.fillStyle = fillStyle || this.ctrlFillStyle;
