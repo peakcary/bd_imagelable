@@ -1,23 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Form, Input, Tooltip, Modal } from 'antd';
 import './index.css';
 
-const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
+const InteractiveImage = ({ imgSrc, initialPoints = [], onSavePoints }) => {
   const imageRef = useRef(null);
   const [points, setPoints] = useState(initialPoints);
   const [currentPoint, setCurrentPoint] = useState(null);
   const [draggingIndex, setDraggingIndex] = useState(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [form] = Form.useForm();
 
   const handleImageClick = (e) => {
     if (draggingIndex !== null) return; // Prevent adding point while dragging
     const rect = imageRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setCurrentPoint({ x, y, name: '', color: '#ff0000', tips: '' });
-    form.resetFields();
+    setCurrentPoint({ x, y, name: '', color: 'red', tips: '' });
   };
 
   const handleInputChange = (e) => {
@@ -25,14 +21,10 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
   };
 
   const handleSavePoint = () => {
-    form.validateFields()
-      .then((values) => {
-        setPoints([...points, { ...currentPoint, ...values }]);
-        setCurrentPoint(null);
-      })
-      .catch((info) => {
-        console.log('Validate Failed:', info);
-      });
+    const updatedPoints = [...points, currentPoint];
+    setPoints(updatedPoints);
+    setCurrentPoint(null);
+    onSavePoints(updatedPoints); // Notify parent component
   };
 
   const handleCancel = () => {
@@ -61,13 +53,10 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
   };
 
   const handleMouseUp = () => {
-    setDraggingIndex(null);
-  };
-
-  const savePoints = () => {
-    if (onSave) {
-      onSave(points);
+    if (draggingIndex !== null) {
+      onSavePoints(points); // Notify parent component
     }
+    setDraggingIndex(null);
   };
 
   useEffect(() => {
@@ -95,67 +84,56 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
       {points.map((point, index) => (
         <div
           key={index}
-          className="point-container"
+          className="point"
           style={{
             position: 'absolute',
             top: point.y - 5,
-            left: point.x - 5
+            left: point.x - 5,
+            width: 10,
+            height: 10,
+            backgroundColor: point.color,
+            borderRadius: '50%',
+            cursor: 'pointer'
           }}
           onMouseDown={(e) => handleMouseDown(index, e)}
-          onMouseEnter={() => setHoveredIndex(index)}
-          onMouseLeave={() => setHoveredIndex(null)}
         >
           <div
-            className="point"
-            style={{
-              width: 10,
-              height: 10,
-              backgroundColor: point.color,
-              borderRadius: '50%',
-              cursor: 'pointer'
-            }}
-          ></div>
-          <Tooltip title={point.tips} visible={hoveredIndex === index}>
-            <div className="label" style={{ top: '-25px', left: '15px', cursor: 'pointer' }}>
-              {point.name}
-            </div>
-          </Tooltip>
+            className="tooltip"
+            style={{ top: '-25px', left: '15px', cursor: 'pointer' }}
+            onMouseDown={(e) => handleMouseDown(index, e)} // Allow dragging by clicking the label
+          >
+            {point.name}
+          </div>
         </div>
       ))}
       {currentPoint && (
-        <Modal
-          title="Add Point"
-          visible={true}
-          onOk={handleSavePoint}
-          onCancel={handleCancel}
-          width={300}
+        <div
+          className="input-container"
+          style={{
+            position: 'absolute',
+            top: currentPoint.y,
+            left: currentPoint.x,
+            backgroundColor: 'white',
+            border: '1px solid black',
+            padding: '10px',
+          }}
         >
-          <Form labelAlign='right'   form={form} initialValues={currentPoint}>
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: 'Please input the name!' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Color"
-              name="color"
-              rules={[{ required: true, message: 'Please select the color!' }]}
-            >
-              <Input type="color" />
-            </Form.Item>
-            <Form.Item
-              label="Tips"
-              name="tips"
-              rules={[{ required: true, message: 'Please input the tips!' }]}
-            >
-              <Input />
-            </Form.Item>
-          </Form>
-        </Modal>
+          <label>
+            Name:
+            <input type="text" name="name" value={currentPoint.name} onChange={handleInputChange} />
+          </label>
+          <label>
+            Color:
+            <input type="color" name="color" value={currentPoint.color} onChange={handleInputChange} />
+          </label>
+          <label>
+            Tips:
+            <input type="text" name="tips" value={currentPoint.tips} onChange={handleInputChange} />
+          </label>
+          <button onClick={handleSavePoint}>Save</button>
+          <button onClick={handleCancel}>Cancel</button>
+        </div>
       )}
-      <Button onClick={savePoints} type="primary" style={{ marginTop: '10px' }}>Save Points</Button>
     </div>
   );
 };

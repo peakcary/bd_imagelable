@@ -1,0 +1,44 @@
+ 
+.image-container {
+    position: relative;
+  }
+  
+  .point-container {
+    position: absolute;
+  }
+  
+  .point {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  
+  .label {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 2px 5px;
+    white-space: nowrap;
+  }
+  
+  .tooltip {
+    position: absolute;
+    background-color: yellow;
+    border: 1px solid black;
+    padding: 5px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  
+  .input-container {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    z-index: 10;
+  }
+  
+  input {
+    margin: 5px 0;
+  }
+  
