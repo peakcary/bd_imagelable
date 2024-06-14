@@ -1,0 +1,25 @@
+.container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.row-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.canvas-box {
+  margin: 10px 0;
+}
+.canvas {
+  border: 1px solid #eee;
+}

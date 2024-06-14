@@ -1,8 +1,7 @@
-import "./App.css";
+import "./index.css";
 
 import React, { useRef, useState, useEffect } from "react";
-import CanvasLabeler from "./utils/canvasLabeler/index.ts";
-import PointCanvas from "./components/PointCanvas/index";
+import CanvasLabeler from "../../utils/canvasLabeler/index.ts";
 import {
   Flex,
   Select,
@@ -18,7 +17,7 @@ import {
   Row,
 } from "antd";
 
-// import useLocalForage from "./utils/useLocalForage/index.js";
+// import useLocalForage from "../../utils/useLocalForage/index.js";
 
 import img1 from "./assets/1.jpg";
 import img2 from "./assets/2.jpg";
@@ -26,7 +25,7 @@ import img3 from "./assets/3.jpg";
 import img4 from "./assets/4.jpg";
 import img5 from "./assets/5.jpg";
 
-function App() {
+function ImageLable() {
   const canvasRef = useRef(null);
   const labelerRef = useRef(null);
   const [imgUrl, setImgUrl] = useState(img1);
@@ -37,29 +36,7 @@ function App() {
 
   const [info, setInfo] = useState({}); // 当前标注信息
   const [infoName, setInfoName] = useState(""); // 当前标注名称信息
-  const [infoColor, setInfoColor] = useState("#666666"); // 当前标注颜色信息
-
-  const [isPreview, setIsPreview] = useState(false);
-
-  const [points, setPoints] = useState([]);
-
-  // const points = [
-  //   { x: 100, y: 100, label: "Point 1", color: "red", tips: "This is point 1" },
-  //   {
-  //     x: 200,
-  //     y: 150,
-  //     label: "Point 2",
-  //     color: "blue",
-  //     tips: "This is point 2",
-  //   },
-  //   {
-  //     x: 300,
-  //     y: 200,
-  //     label: "Point 3",
-  //     color: "green",
-  //     tips: "This is point 3",
-  //   },
-  // ];
+  const [infoColor, setInfoColor] = useState("#555"); // 当前标注颜色信息
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -79,7 +56,7 @@ function App() {
       //   console.log(JSON.stringify(result))
       // });
     }
-  }, [imgUrl]);
+  });
 
   // 图片 标注 删除
   const delByIndex = (index) => {
@@ -174,44 +151,6 @@ function App() {
     // setDataStore(dN);
   };
 
-  const handlePreview = () => {
-    // const points = [
-    //   { x: 100, y: 100, label: "Point 1", color: "red", tips: "This is point 1" },
-    //   {
-    //     x: 200,
-    //     y: 150,
-    //     label: "Point 2",
-    //     color: "blue",
-    //     tips: "This is point 2",
-    //   },
-    //   {
-    //     x: 300,
-    //     y: 200,
-    //     label: "Point 3",
-    //     color: "green",
-    //     tips: "This is point 3",
-    //   },
-    // ];
-
-    console.log("_________");
-    console.log(dataList);
-
-    const dataNew = dataList.map((item) => {
-      let itemNew = {};
-      itemNew.x = item.coor[0];
-      itemNew.y = item.coor[1];
-      itemNew.label = item.name;
-      itemNew.color = item.color;
-      itemNew.tips = item.name;
-      return itemNew;
-    });
-    console.log("_________ dataNew");
-    console.log(dataNew);
-    setPoints(dataNew);
-
-    setIsPreview(!isPreview);
-  };
-
   const columns = [
     {
       title: "序号",
@@ -270,104 +209,76 @@ function App() {
 
   const tableList = dataList ? [...dataList] : [];
   return (
-    <div className="App">
-      <Flex gap="middle" vertical>
-        <Flex>
-          <div className="background-div">
-            <canvas
-              className="canvas"
-              ref={canvasRef}
-              width={800}
-              height={600}
-            />
-          </div>
-          {isPreview && (
-            <div className="overlay-div">
-              <PointCanvas imgSrc={imgUrl} points={points} />
-            </div>
-          )}
-        </Flex>
-        <Flex wrap gap="small" align="center">
-          <div className="row-label">图片切换:</div>
-          <Select
-            defaultValue="1"
-            style={{ width: 120 }}
-            onChange={handleImageChange}
-            options={[
-              { value: "1", label: "图片1" },
-              { value: "2", label: "图片2" },
-              { value: "3", label: "图片3" },
-              { value: "4", label: "图片4" },
-            ]}
-          />
-          <Button type="primary" onClick={() => zoom(true)}>
-            +
-          </Button>
-          <Button type="primary" onClick={() => zoom(false)}>
-            -
-          </Button>
-          <Button type="primary" onClick={fitting} autoInsertSpace>
-            fitting
-          </Button>
-          <Button type="primary" onClick={onFocus} autoInsertSpace>
-            {isFocusMode ? "专注模式" : "非专注模式"}
-          </Button>
-          <Button type="primary" onClick={handlePreview} autoInsertSpace>
-            {isPreview ? "设计" : "预览"}
-          </Button>
-        </Flex>
-        <Flex wrap gap="small" align="start">
-          <Table columns={columns} dataSource={tableList} />
-        </Flex>
-        <Modal
-          title="标注信息"
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          cancelText="取消"
-          okText="确定"
-        >
-          <Space direction="vertical">
-            <Row>
-              <Col span={6}>序号：</Col>
-              <Col span={12}>{info.index}</Col>
-            </Row>
-            <Row>
-              <Col span={6}>名称：</Col>
-              <Col span={12}>
-                <Input
-                  value={infoName}
-                  onChange={(e) => setInfoName(e.target.value)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={6}>颜色：</Col>
-              <Col span={12}>
-                <ColorPicker
-                  value={infoColor}
-                  onChange={(c) => {
-                    setInfoColor(c.toHexString());
-                  }}
-                  showText
-                />
-              </Col>
-            </Row>
-          </Space>
-        </Modal>
-
-        <Modal
-          width={860}
-          title="预览"
-          open={isPreview}
-          footer={<></>}
-          maskClosable={false}
-          closable={true}
-        >
-          <PointCanvas imgSrc={imgUrl} points={points} />
-        </Modal>
+    <Flex gap="middle" vertical>
+      <Flex>
+        <canvas className="canvas" ref={canvasRef} width={800} height={600} />
       </Flex>
-    </div>
+      <Flex wrap gap="small" align="center">
+        <div className="row-label">图片切换:</div>
+        <Select
+          defaultValue="1"
+          style={{ width: 120 }}
+          onChange={handleImageChange}
+          options={[
+            { value: "1", label: "图片1" },
+            { value: "2", label: "图片2" },
+            { value: "3", label: "图片3" },
+            { value: "4", label: "图片4" },
+          ]}
+        />
+        <Button type="primary" onClick={() => zoom(true)}>
+          +
+        </Button>
+        <Button type="primary" onClick={() => zoom(false)}>
+          -
+        </Button>
+        <Button type="primary" onClick={fitting} autoInsertSpace>
+          fitting
+        </Button>
+        <Button type="primary" onClick={onFocus} autoInsertSpace>
+          {isFocusMode ? "专注模式" : "非专注模式"}
+        </Button>
+      </Flex>
+      <Flex wrap gap="small" align="start">
+        <Table columns={columns} dataSource={tableList} />
+      </Flex>
+      <Modal
+        title="标注信息"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="取消"
+        okText="确定"
+      >
+        <Space direction="vertical">
+          <Row>
+            <Col span={6}>序号：</Col>
+            <Col span={12}>{info.index}</Col>
+          </Row>
+          <Row>
+            <Col span={6}>名称：</Col>
+            <Col span={12}>
+              <Input
+                value={infoName}
+                onChange={(e) => setInfoName(e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={6}>颜色：</Col>
+            <Col span={12}>
+              <ColorPicker
+                value={infoColor}
+                onChange={(c) => {
+                  setInfoColor(c.toHexString());
+                }}
+                showText
+              />
+            </Col>
+          </Row>
+        </Space>
+      </Modal>
+    </Flex>
   );
 }
-export default App;
+export default ImageLable;

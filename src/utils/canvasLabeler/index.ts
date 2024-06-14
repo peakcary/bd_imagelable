@@ -241,8 +241,7 @@ export default class CanvasLabeler extends EventBus {
     this.mouse = [mouseX, mouseY];
     this.setScale(e.deltaY < 0, true);
   }
-  handleMouseDown(e: MouseEvent | TouchEvent) {
-    // console.log('handleMouseDown', e);
+  handleMouseDown(e: MouseEvent | TouchEvent) { 
     e.stopPropagation();
     this.evt = e;
     if (this.lock) return;
@@ -326,8 +325,7 @@ export default class CanvasLabeler extends EventBus {
           this.dataset.forEach((sp) => {
             sp.active = false;
           });
-          newShape.active = true;
-          // console.log('newShape===>>>', newShape);
+          newShape.active = true; 
           newShape = this.updateCount(newShape);
           this.dataset.push(newShape);
         } else {
@@ -447,8 +445,7 @@ export default class CanvasLabeler extends EventBus {
             y1_ < 0 ||
             x1_ > this.IMAGE_ORIGIN_WIDTH ||
             y1_ > this.IMAGE_ORIGIN_HEIGHT
-          ) {
-            console.log('超出边界');
+          ) { 
             //偶然触发 超出边界处理
             x0_ < 0 && (x0_ = 0);
             x1_ < 0 && (x1_ = 0);
@@ -806,8 +803,7 @@ export default class CanvasLabeler extends EventBus {
       this.deleteByIndex(this.activeShape.index);
     }
     // enter 确认
-    if (this.activeShape.type === 2 && e.key === 'Enter') {
-      // console.log('123123');
+    if (this.activeShape.type === 2 && e.key === 'Enter') { 
       this.handelDblclick(e);
     }
     if (e.code === 'Digit1' && e.shiftKey) {
@@ -830,8 +826,7 @@ export default class CanvasLabeler extends EventBus {
       this.rotate();
     }
   }
-  rotate() {
-    // console.log('this.activeShape', this.activeShape);
+  rotate() { 
     if (
       this.lock ||
       document.activeElement !== document.body ||
@@ -1277,15 +1272,20 @@ export default class CanvasLabeler extends EventBus {
       active,
       coor,
       label,
-    } = shape;
-    // console.log('=====')
-    // console.log(shape)
+      index,
+    } = shape; 
     const [x, y] = coor.map((a) => a * this.scale);
     this.ctx.save();
     this.ctx.fillStyle = fillStyle || this.ctrlFillStyle;
-    this.ctx.strokeStyle = active
-      ? this.activeStrokeStyle
-      : strokeStyle || this.strokeStyle;
+
+    // todo
+    // update begin 把标注颜色写死为#000000
+    // this.ctx.strokeStyle = active
+    //   ? this.activeStrokeStyle
+    //   : strokeStyle || this.strokeStyle; 
+    this.ctx.strokeStyle = "#000000";  
+    // update begin
+
     this.ctx.lineWidth = this.lineWidth;
     this.ctx.beginPath();
     this.ctx.arc(x, y, this.ctrlRadius, 0, 2 * Math.PI, true);
@@ -1295,10 +1295,11 @@ export default class CanvasLabeler extends EventBus {
     this.ctx.restore();
     this.drawLabel(
       coor as Point,
-      label,
+      (index+1)+'',// label
       labelFillStyle,
       labelFont,
-      textFillStyle
+      textFillStyle,
+      index // 新加的count
     );
   }
   /**
@@ -1449,6 +1450,7 @@ export default class CanvasLabeler extends EventBus {
    * @param point 位置
    * @param label 文本
    */
+  /*
   drawLabel(
     point: Point,
     label = '',
@@ -1494,6 +1496,56 @@ export default class CanvasLabeler extends EventBus {
         toTop ? y - 3 : y + textH - 4,
         180
       );
+      this.ctx.restore();
+    }
+  }
+  */
+  drawLabel(
+    point: Point,
+    label = '',
+    labelFillStyle = '',
+    labelFont = '',
+    textFillStyle = '',
+    count = 0
+  ) {
+    if (label.length) {
+      this.ctx.font = labelFont || this.labelFont;
+
+      const textH = parseInt(this.ctx.font) + 6;
+      const newText =
+        label.length < this.labelMaxLen + 1
+          ? label
+          : `${label.slice(0, this.labelMaxLen)}...`;
+      const text = this.ctx.measureText(newText);
+      const [x, y] = point.map((a) => a * this.scale);
+      const toleft =
+        this.IMAGE_ORIGIN_WIDTH - point[0] < (text.width + 4) / this.scale;
+      const toTop = this.IMAGE_ORIGIN_HEIGHT - point[1] < textH / this.scale;
+      
+      this.ctx.save();
+      this.ctx.fillStyle = labelFillStyle || this.labelFillStyle;
+
+      this.ctx.fillRect(
+        toleft ? x - text.width - 3 : x + 10,
+        toTop ? y - textH + 3 : y + 10,
+        0,
+        0
+      );
+      this.ctx.fillStyle = textFillStyle || this.textFillStyle;
+      this.ctx.fillText(
+        newText,
+        toleft ? x - text.width - 2 : x + 2,
+        toTop ? y - 3 : y + textH - 4,
+        180
+      );
+      // this.ctx.fillStyle = 'red';
+      // this.ctx.font = '12px Arial';
+      // this.ctx.fillText(
+      //   count,
+      //   toleft ? x + 20 : x + text.width + 20,
+      //   toTop ? y - 3 : y + textH - 4,
+      //   180
+      // );
       this.ctx.restore();
     }
   }
