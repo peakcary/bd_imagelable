@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import './index.css';
+import React, { useRef, useEffect, useState } from "react";
+import "./index.css";
 
-const PointCanvas = ({ imgSrc, points }) => {
+const PointCanvas = ({ imgSrc, points }) => { 
   const canvasRef = useRef(null);
   const [hoveredPoint, setHoveredPoint] = useState(null);
   const [canvasRect, setCanvasRect] = useState({});
@@ -17,16 +17,17 @@ const PointCanvas = ({ imgSrc, points }) => {
   }, [points]);
 
   useEffect(() => {
-    const componentRect = canvasRef.current.parentElement.getBoundingClientRect();
+    const componentRect =
+      canvasRef.current.parentElement.getBoundingClientRect();
     setComponentRect(componentRect);
   }, []);
 
   const drawPoints = () => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除画布
 
-    points.forEach(point => {
+    points.forEach((point) => {
       // Draw point
       ctx.fillStyle = point.color;
       ctx.beginPath();
@@ -34,8 +35,8 @@ const PointCanvas = ({ imgSrc, points }) => {
       ctx.fill();
 
       // Draw label
-      ctx.fillStyle = 'black';
-      ctx.font = '14px Arial';
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
       ctx.fillText(point.label, point.x + 10, point.y - 10);
     });
   };
@@ -45,12 +46,14 @@ const PointCanvas = ({ imgSrc, points }) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const point = points.find(p => Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2) < 5);
+    const point = points.find(
+      (p) => Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2) < 5
+    );
     setHoveredPoint(point);
   };
 
   return (
-    <div className="point-canvas" style={{ position: 'relative' }}>
+    <div className="point-canvas" style={{ position: "relative" }}>
       <canvas
         ref={canvasRef}
         width={800}
@@ -62,8 +65,18 @@ const PointCanvas = ({ imgSrc, points }) => {
         <div
           className="tooltip"
           style={{
-            top: canvasRect.top + hoveredPoint.y - 40 - componentRect.top + window.scrollY,
-            left: canvasRect.left + hoveredPoint.x + 10 - componentRect.left + window.scrollX
+            top:
+              canvasRect.top +
+              hoveredPoint.y -
+              40 -
+              componentRect.top +
+              window.scrollY,
+            left:
+              canvasRect.left +
+              hoveredPoint.x +
+              10 -
+              componentRect.left +
+              window.scrollX,
           }}
         >
           {hoveredPoint.tips}

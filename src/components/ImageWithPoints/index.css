@@ -1,0 +1,19 @@
+.image-container {
+  position: relative;
+}
+
+.point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: yellow;
+  border: 1px solid black;
+  padding: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+}
