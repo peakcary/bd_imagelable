@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, Form, Input, Tooltip, Modal, ColorPicker } from "antd";
-import { DeleteOutlined,CloseCircleOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Tooltip, Modal } from "antd";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import "./index.css";
 
 const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
@@ -21,10 +21,6 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
     setCurrentPoint({ x, y, name: "", color: "#ff0000", tips: "" });
     form.resetFields();
   };
-
-  // const handleInputChange = (e) => {
-  //   setCurrentPoint({ ...currentPoint, [e.target.name]: e.target.value });
-  // };
 
   const handleSavePoint = () => {
     form
@@ -130,14 +126,16 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
                 borderRadius: "50%",
                 cursor: "pointer",
               }}
-            > 
-            </div>
+            ></div>
 
             <div
               className="label-container"
               style={{ position: "relative", cursor: "pointer" }}
             >
-              <Tooltip title={point.tips} open={hoveredIndex === index && point.tips !== ''}>
+              <Tooltip
+                title={point.tips}
+                open={hoveredIndex === index && point.tips !== ""}
+              >
                 <div className="label" style={{ top: "-30px", left: "10px" }}>
                   {point.name}
                 </div>
@@ -145,7 +143,11 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
               <Button
                 type="text"
                 size="small"
-                icon={<CloseCircleOutlined style={{color:"blue",fontSize:'10px'}} />}
+                icon={
+                  <CloseCircleOutlined
+                    style={{ color: "blue", fontSize: "10px" }}
+                  />
+                }
                 onClick={() => handleDeletePoint(index)}
                 style={{
                   position: "absolute",
@@ -189,22 +191,13 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
             >
               <Input type="color" />
             </Form.Item>
-            <Form.Item
-              label="原材料"
-              name="material" 
-            >
+            <Form.Item label="原材料" name="material">
               <Input />
             </Form.Item>
-            <Form.Item
-              label="供应商"
-              name="com" 
-            >
+            <Form.Item label="供应商" name="com">
               <Input />
             </Form.Item>
-            <Form.Item
-              label="提示信息"
-              name="tips" 
-            >
+            <Form.Item label="提示信息" name="tips">
               <Input />
             </Form.Item>
           </Form>

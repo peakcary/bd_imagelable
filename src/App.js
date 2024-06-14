@@ -55,7 +55,13 @@ const App = () => {
           initialPoints={dataList}
           onSave={handleSave}
         />
-        <Table size="small" pagination={false} scroll={{ y: 400 }}  columns={columns} dataSource={dataList} />
+        <Table
+          size="small"
+          pagination={false}
+          scroll={{ y: 400 }}
+          columns={columns}
+          dataSource={dataList}
+        />
       </div>
     </div>
   );
