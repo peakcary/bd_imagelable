@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Form, Input, Tooltip, Modal, ColorPicker } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined,CloseCircleOutlined } from "@ant-design/icons";
 import "./index.css";
 
 const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
@@ -138,19 +138,19 @@ const InteractiveImage = ({ imgSrc, initialPoints = [], onSave }) => {
               style={{ position: "relative", cursor: "pointer" }}
             >
               <Tooltip title={point.tips} open={hoveredIndex === index && point.tips !== ''}>
-                <div className="label" style={{ top: "-25px", left: "15px" }}>
+                <div className="label" style={{ top: "-30px", left: "10px" }}>
                   {point.name}
                 </div>
               </Tooltip>
               <Button
                 type="text"
                 size="small"
-                icon={<DeleteOutlined />}
+                icon={<CloseCircleOutlined style={{color:"blue",fontSize:'10px'}} />}
                 onClick={() => handleDeletePoint(index)}
                 style={{
                   position: "absolute",
                   top: "-45px",
-                  left: "50px",
+                  left: "-5px",
                   color: "red",
                   cursor: "pointer",
                 }}
